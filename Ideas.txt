@@ -1,0 +1,20 @@
+WeekDay Analysis
+****************************************
+- Given a conversation makes an histogram of the weekday it was sent
+ i.e. Monday(200),Tuesday(100),Wednesday(250),...
+
+ ibrary calendar -> clendar.weekday(year,month,day)
+
+ Hour Analysis
+****************************************
+- Given a conversation makes an histogram of the hour it was sent
+i.e. 17-18(5),...
+
+Number of Messages
+****************************************
+- Counts de number of total messages by day
+
+Mean text length
+****************************************
+- Average length of text in a day
+
