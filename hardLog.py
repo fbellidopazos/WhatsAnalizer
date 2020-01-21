@@ -2,7 +2,7 @@ from object_conversation import conversation
 import matplotlib.pyplot as plt
 from whatsParser import getUsers
 
-conv=conversation("text/jose.txt")
+conv=conversation("text/log.txt")
 
 conv.conv_log()
 
