@@ -8,12 +8,14 @@ class user:
         self.name=name
         self.messages=[]
 
+
     def total_messages(self):
-        res=0
+        res = 0
         for i in self.messages:
-            res+=len(i)
+            res += len(i)
 
         return res
+
 
     def add_message(self,message):
         if(self.total_messages()==0):
@@ -31,6 +33,15 @@ class user:
 
     def average_messages(self):
         return self.total_messages()/len(self.messages)
+    def average_length(self):
+        total_length=0
+        total_messages=0
+        for i in self.messages:
+            for j in i:
+                total_length+=len(j)
+                total_messages+=1
+
+        return total_length/total_messages
 
     def average_hour(self):
         hours = [0 for i in range(0, 24)]
@@ -44,7 +55,7 @@ class user:
             if(dd2==dd and mm2==mm and yy2==yy):
                 return i
         return -1
-    def daily_quantity_analysis(self,withGaps:bool):
+    def daily_quantity_analysis(self,withGaps:bool,images=True,average=True):
        # fig=plt.figure()
         x_axis=[]
         y_axis=[]
@@ -63,11 +74,13 @@ class user:
                         # Append en los arrays
                         x_axis.append(f"{day.day}/{day.month}/{day.year-2000}")
                         y_axis.append(0)
-                        y_images.append(0)
+                        if images:
+                            y_images.append(0)
 
                 x_axis.append(i[0].date)
                 y_axis.append(len(i))
-                y_images.append(self.count_images_aDay(i))
+                if images:
+                    y_images.append(self.count_images_aDay(i))
                 first_day=last_day+timedelta(days=1)
 
 
@@ -76,20 +89,25 @@ class user:
             for i in self.messages:
                 x_axis.append(i[0].date)
                 y_axis.append(len(i))
-                y_images.append(self.count_images_aDay(i))
+                if images:
+                    y_images.append(self.count_images_aDay(i))
 
         plt.bar(x_axis,y_axis)
-        plt.bar(x_axis,y_images)
-        average=self.average_messages()
+        if images:
+            plt.bar(x_axis,y_images)
+        if average:
+            average=self.average_messages()
         plt.xlabel("Days")
         plt.ylabel("Number of Messages")
         plt.xticks(x_axis, x_axis, fontsize=float(5.5),rotation='vertical')
-        plt.axhline(y=average,linewidth=1, color='k')
-        plt.legend(["Average","NºMessages","NºImages/Vids/Stickers/..."],prop={'size': 6})
+        if average:
+            plt.axhline(y=average,linewidth=1, color='k')
+        if images:
+            plt.legend(["Average","NºMessages","NºImages/Vids/Stickers/..."],prop={'size': 6})
         plt.title(f' {self.name} - daily_quantity_analysis')
         #plt.show()
 
-    def hour_analysis(self):
+    def hour_analysis(self,images=True,average=True):
         #fig=plt.figure()
         x_axis=[i for i in range(0,24)]
         y_axis=[0 for i in range(0,24)]
@@ -97,20 +115,23 @@ class user:
         for i in self.messages:
             for j in i:
                 y_axis[j.get_hour()]+=1
-                if(j.text.find("<Multimedia omitido>")!=-1):
+                if(images and j.text.find("<Multimedia omitido>")!=-1):
                     y_images[j.get_hour()]+=1
 
         plt.bar(x_axis,y_axis)
-        plt.bar(x_axis,y_images)
+        if images:
+            plt.bar(x_axis,y_images)
         average_hour=sum(y_axis)/24
         plt.xlabel("Hours")
         plt.ylabel("Number of Messages/hour")
-        plt.axhline(y=average_hour, linewidth=1, color='k')
-        plt.legend(["Average", "NºMessages","NºImages/Vids/Stickers/..."],prop={'size': 6})
+        if average:
+            plt.axhline(y=average_hour, linewidth=1, color='k')
+        if images:
+            plt.legend(["Average", "NºMessages","NºImages/Vids/Stickers/..."],prop={'size': 6})
         plt.title(f' {self.name} - hour_analysis')
         #plt.show()
 
-    def weekday_analysis(self):
+    def weekday_analysis(self,images=True,average=True):
         #fig=plt.figure()
         weekday=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
         weekday_numb=[0 for i in range(0,len(weekday))]
@@ -119,17 +140,22 @@ class user:
             for j in i:
                 index=j.week_day_int()
                 weekday_numb[index]+=1
-                if (j.text.find("<Multimedia omitido>") != -1):
+
+                if (images and j.text.find("<Multimedia omitido>") != -1):
                     y_images[index] += 1
 
         average_weekday=sum(weekday_numb)/7
         plt.bar(weekday,weekday_numb)
-        plt.bar(weekday,y_images)
+        if(images):
+            plt.bar(weekday,y_images)
         plt.xlabel("WeekDays")
-        plt.axhline(y=average_weekday, linewidth=1, color='k')
+        if average:
+            plt.axhline(y=average_weekday, linewidth=1, color='k')
         plt.ylabel("Number of Messages/WeekDay")
         plt.title(f' {self.name} - weekday_analysis')
-        plt.legend(["Average","NºMessages","NºImages/Vids/Stickers/..."],prop={'size': 6})
+        if(images):
+            plt.legend(["Average","NºMessages","NºImages/Vids/Stickers/..."],prop={'size': 6})
+
         #plt.show()
 
     def length_messages_log(self):
@@ -163,14 +189,14 @@ class user:
         plt.legend(["Average", "NºMessages"], prop={'size': 6})
 
 
-    def analysis_log(self,withGap):
+    def analysis_log(self,withGap,images=True,average=True):
         plt.figure(f"Analysis of {self.name}  with total Messages: {self.total_messages()}")
         plt.subplot(2, 1, 1)
         self.daily_quantity_analysis(withGap)
         plt.subplot(2, 2, 3)
-        self.weekday_analysis()
+        self.weekday_analysis(images,average)
         plt.subplot(2, 2, 4)
-        self.hour_analysis()
+        self.hour_analysis(images,average)
         plt.subplots_adjust(left=0.05,bottom=0.05,right=0.99,top=0.95,wspace=0.2,hspace=0.26)
 
         plt.figure(f"Analysis of {self.name}  with total Messages: {self.total_messages()} part 2")
@@ -227,4 +253,3 @@ class message:
     def get_date(self):
         aux = self.date.split("/")
         return 2000+int(aux[2]),int(aux[1]),int(aux[0])
-

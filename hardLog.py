@@ -1,13 +1,8 @@
-from whatsParser import *
+from object_conversation import conversation
 import matplotlib.pyplot as plt
-users=getUsers("text/jose.txt")
-print(users)
 
-for i in users:
-    if(i.name==None):
-        continue
-    else:
+conv=conversation("text/usa.txt")
 
-        i.analysis_log(True)
+conv.conv_log()
 
 plt.show()
