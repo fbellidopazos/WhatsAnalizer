@@ -25,7 +25,7 @@ Edit users[2] to get the user
 from object_conversation import conversation
 import matplotlib.pyplot as plt
 from whatsParser import getUsers
-users=getUsers("text/jose.txt")
+users=getUsers("text/log.txt")
 users[2].analysis_log(False)
 plt.show()
 ```
