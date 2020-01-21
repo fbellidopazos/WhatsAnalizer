@@ -29,4 +29,4 @@ users=getUsers("text/jose.txt")
 users[2].analysis_log(False)
 plt.show()
 ```
-1. Run
+4. Run
